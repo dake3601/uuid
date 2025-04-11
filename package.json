@@ -26,23 +26,12 @@
   "main": "./dist/cjs/index.js",
   "exports": {
     ".": {
-      "node": {
-        "import": "./dist/esm/index.js",
-        "require": "./dist/cjs/index.js"
-      },
-      "browser": {
-        "import": "./dist/esm-browser/index.js",
-        "require": "./dist/cjs-browser/index.js"
-      },
-      "default": "./dist/esm-browser/index.js"
-    },
-    "./package.json": "./package.json"
+      "source": "./src/index.ts",
+      "import": "./dist/esm-browser/index.js",
+      "require": "./dist/cjs-browser/index.js"
+    }
   },
   "module": "./dist/esm/index.js",
-  "browser": {
-    "./dist/esm/index.js": "./dist/esm-browser/index.js",
-    "./dist/cjs/index.js": "./dist/cjs-browser/index.js"
-  },
   "files": [
     "dist",
     "!dist/**/test"
