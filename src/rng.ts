@@ -1,12 +1,22 @@
-import { randomFillSync } from 'crypto';
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
 
-const rnds8Pool = new Uint8Array(256); // # of random values to pre-allocate
-let poolPtr = rnds8Pool.length;
+let getRandomValues: typeof crypto.getRandomValues | undefined;
+
+const rnds8 = new Uint8Array(16);
 
 export default function rng() {
-  if (poolPtr > rnds8Pool.length - 16) {
-    randomFillSync(rnds8Pool);
-    poolPtr = 0;
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    if (typeof crypto === 'undefined' || !crypto.getRandomValues) {
+      throw new Error(
+        'crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported'
+      );
+    }
+
+    getRandomValues = crypto.getRandomValues.bind(crypto);
   }
-  return rnds8Pool.slice(poolPtr, (poolPtr += 16));
+
+  return getRandomValues(rnds8);
 }
